@@ -1,6 +1,6 @@
 breed [Pessoas Pessoa]
-globals [ p_morte p_cura infected deaths i Covid HIV Peste_negra Tipo_virus gl]
-pessoas-own [p_inf virus? idade]
+globals [infected deaths i Covid HIV Peste_negra Tipo_virus gl gl2 tempo]
+pessoas-own [p_inf virus? idade p_morte p_cura]
 to setup
   clear-all
   ask patches [set pcolor 95]
@@ -96,10 +96,13 @@ to setup
     set i random 3 + 1
     set idade random 99
     set gl 0
+    set gl2 0
+     set tempo 0
   ]
   set infected 0
   set deaths 0
   reset-ticks
+
 end
 
 to go_once
@@ -127,12 +130,12 @@ end
     set heading random 360
     forward n_movement
     set p_inf random-float 1.0001
-    set idade idade + 1
+    set idade idade + n_movement
     if idade > 1000 [die]
-    if idade >= 600 and idade >= 1000[set p_inf p_inf + 0.4 set p_morte p_morte + 0.3]
-    if idade >= 400 and idade >= 600[set p_inf p_inf + 0.25 set p_morte p_morte + 0.15]
-    if idade >= 300 and idade >= 400[set p_inf p_inf + 0.15 set p_morte p_morte + 0.1]
-    if idade >= 0 and idade >= 300 [set p_inf p_inf + 0.10 set p_morte p_morte + 0]
+    if idade >= 600 and idade <= 1000[set p_inf p_inf + 0.4 set p_morte p_morte + 0.3]
+    if idade >= 400 and idade <= 600[set p_inf p_inf + 0.25 set p_morte p_morte + 0.15]
+    if idade >= 300 and idade <= 400[set p_inf p_inf + 0.15 set p_morte p_morte + 0.1]
+    if idade >= 0 and idade <= 300 [set p_inf p_inf + 0.10 set p_morte p_morte + 0]
   ]
   ask Pessoas[
     if any? other Pessoas-here with [virus? = true]
@@ -154,6 +157,13 @@ to go
     set idade idade + 1
     if idade > 1000 [die]
     set gl random-float 1.0001
+    set gl2 random-float 1.0001
+    set idade idade + n_movement
+    if idade > 1000 [die]
+    if idade >= 600 and idade >= 1000[set p_inf p_inf + 0.4 set p_morte p_morte + 0.3]
+    if idade >= 400 and idade >= 600[set p_inf p_inf + 0.25 set p_morte p_morte + 0.15]
+    if idade >= 300 and idade >= 400[set p_inf p_inf + 0.15 set p_morte p_morte + 0.1]
+    if idade >= 0 and idade >= 300 [set p_inf p_inf + 0.10 set p_morte p_morte + 0]
   ]
   ask Pessoas[
     if any? other Pessoas-here with [virus? = true]
@@ -161,14 +171,18 @@ to go
       if p_inf > gl
       [
         set virus? true
-        if i = 1[set color red]
-        if i = 2[set color yellow]
-        if i = 3[set color black]
+        if i = 1[set p_morte p_morte + 0.1 set p_cura p_cura + 0.3 set color red set p_inf p_inf + 0.3]
+        if i = 2[set p_morte p_morte + 0.3 set p_cura p_cura + 0.1 set color yellow set p_inf p_inf + 0.2]
+        if i = 3[set p_morte p_morte + 0.7 set p_cura p_cura + 0 set color black set p_inf p_inf + 0.1]
         set infected infected + 1
+        if tempo = 10
+        [set tempo 0 if p_morte > gl2 [die] ]
+      if tempo < 10 [set tempo tempo + 1]
+
       ]
     ]
   ]
-
+tick
 end
 
 to spread
