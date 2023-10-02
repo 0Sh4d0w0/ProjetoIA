@@ -1,28 +1,87 @@
 breed [Pessoas Pessoa]
-globals [ p_morte p_cura infected deaths i Covid HIV Peste_negra Tipo_virus]
+globals [ p_morte p_cura infected deaths i Covid HIV Peste_negra Tipo_virus gl]
 pessoas-own [p_inf virus? idade]
 to setup
   clear-all
-  ask patches [set pcolor blue]
-  ask patch 9 -7 [set pcolor red]
-  ask patch 10 -7 [set pcolor red]
-  ask patch 9 -6 [set pcolor red]
-  ask patch 8 -7 [set pcolor red]
-  ask patch 9 -8 [set pcolor red]
-  ask patch 10 -8 [set pcolor gray]
-  ask patch 8 -8 [set pcolor gray]
-  ask patch 10 -8 [set pcolor gray]
-  ask patch 10 -6 [set pcolor gray]
+  ask patches [set pcolor 95]
+  ask patch 5 -6 [set pcolor 4]
+  ask patch 5 -7 [set pcolor 4]
+  ask patch 5 -8 [set pcolor 4]
+  ask patch 5 -9 [set pcolor 4]
+  ask patch 5 -10 [set pcolor 4]
+  ask patch 5 -11 [set pcolor 4]
+  ask patch 5 -12 [set pcolor 4]
+  ask patch 5 -13 [set pcolor 4]
+  ask patch 6 -6 [set pcolor 4]
+  ask patch 6 -7 [set pcolor gray]
+  ask patch 6 -8 [set pcolor gray]
+  ask patch 6 -9 [set pcolor gray]
+  ask patch 6 -10 [set pcolor gray]
+  ask patch 6 -11 [set pcolor gray]
+  ask patch 6 -12 [set pcolor gray]
+  ask patch 6 -13 [set pcolor gray]
+  ask patch 7 -5 [set pcolor 4]
+  ask patch 7 -6 [set pcolor gray]
+  ask patch 7 -7 [set pcolor gray]
+  ask patch 7 -8 [set pcolor gray]
+  ask patch 7 -9 [set pcolor gray]
+  ask patch 7 -10 [set pcolor gray]
+  ask patch 7 -11 [set pcolor gray]
+  ask patch 7 -12 [set pcolor gray]
+  ask patch 7 -13 [set pcolor gray]
+  ask patch 8 -5 [set pcolor 4]
   ask patch 8 -6 [set pcolor gray]
+  ask patch 8 -7 [set pcolor gray]
+  ask patch 8 -8 [set pcolor red]
   ask patch 8 -9 [set pcolor gray]
-  ask patch 9 -9 [set pcolor gray]
+  ask patch 8 -10 [set pcolor gray]
+  ask patch 8 -11 [set pcolor 4]
+  ask patch 8 -12 [set pcolor 85]
+  ask patch 8 -13 [set pcolor 85]
+  ask patch 9 -5 [set pcolor 4]
+  ask patch 9 -6 [set pcolor gray]
+  ask patch 9 -7 [set pcolor red]
+  ask patch 9 -8 [set pcolor red]
+  ask patch 9 -9 [set pcolor red]
+  ask patch 9 -10 [set pcolor gray]
+  ask patch 9 -11 [set pcolor 4]
+  ask patch 9 -12 [set pcolor gray]
+  ask patch 9 -13 [set pcolor gray]
+  ask patch 10 -5 [set pcolor 4]
+  ask patch 10 -6 [set pcolor gray]
+  ask patch 10 -7 [set pcolor gray]
+  ask patch 10 -8 [set pcolor red]
   ask patch 10 -9 [set pcolor gray]
   ask patch 10 -10 [set pcolor gray]
-  ask patch 10 -11 [set pcolor gray]
-  ask patch 8 -10 [set pcolor gray]
-  ask patch 8 -11 [set pcolor gray]
-  ask patch 9 -10 [set pcolor brown]
-  ask patch 9 -11 [set pcolor brown]
+  ask patch 10 -11 [set pcolor 4]
+  ask patch 10 -12 [set pcolor 85]
+  ask patch 10 -13 [set pcolor 85]
+  ask patch 11 -5 [set pcolor 4]
+  ask patch 11 -6 [set pcolor gray]
+  ask patch 11 -7 [set pcolor gray]
+  ask patch 11 -8 [set pcolor gray]
+  ask patch 11 -9 [set pcolor gray]
+  ask patch 11 -10 [set pcolor gray]
+  ask patch 11 -11 [set pcolor gray]
+  ask patch 11 -12 [set pcolor gray]
+  ask patch 11 -13 [set pcolor gray]
+  ask patch 12 -6 [set pcolor 4]
+  ask patch 12 -7 [set pcolor gray]
+  ask patch 12 -8 [set pcolor gray]
+  ask patch 12 -9 [set pcolor gray]
+  ask patch 12 -10 [set pcolor gray]
+  ask patch 12 -11 [set pcolor gray]
+  ask patch 12 -12 [set pcolor gray]
+  ask patch 12 -13 [set pcolor gray]
+  ask patch 13 -6 [set pcolor 4]
+  ask patch 13 -7 [set pcolor 4]
+  ask patch 13 -8 [set pcolor 4]
+  ask patch 13 -9 [set pcolor 4]
+  ask patch 13 -10 [set pcolor 4]
+  ask patch 13 -11 [set pcolor 4]
+  ask patch 13 -12 [set pcolor 4]
+  ask patch 13 -13 [set pcolor 4]
+
 
   create-Pessoas n_pessoas[
     set shape "person"
@@ -36,6 +95,7 @@ to setup
     set p_cura 0
     set i random 3 + 1
     set idade random 99
+    set gl 0
   ]
   set infected 0
   set deaths 0
@@ -56,7 +116,6 @@ to go_once
       if p_inf > 0.5
       [
         set virus? true
-        set color red
         set infected infected + 1
       ]
     ]
@@ -70,6 +129,10 @@ end
     set p_inf random-float 1.0001
     set idade idade + 1
     if idade > 1000 [die]
+    if idade >= 600 and idade >= 1000[set p_inf p_inf + 0.4 set p_morte p_morte + 0.3]
+    if idade >= 400 and idade >= 600[set p_inf p_inf + 0.25 set p_morte p_morte + 0.15]
+    if idade >= 300 and idade >= 400[set p_inf p_inf + 0.15 set p_morte p_morte + 0.1]
+    if idade >= 0 and idade >= 300 [set p_inf p_inf + 0.10 set p_morte p_morte + 0]
   ]
   ask Pessoas[
     if any? other Pessoas-here with [virus? = true]
@@ -77,7 +140,6 @@ end
       if p_inf > 0.5
       [
         set virus? true
-        set color red
         set infected infected + 1
       ]
     ]
@@ -88,14 +150,15 @@ to go
   ask Pessoas[
     set heading random 360
     forward 1
-    set p_inf random-float 1.0001
+    set p_inf p_inf + random-float 0.2001
     set idade idade + 1
     if idade > 1000 [die]
+    set gl random-float 1.0001
   ]
   ask Pessoas[
     if any? other Pessoas-here with [virus? = true]
     [
-      if p_inf > 0.5
+      if p_inf > gl
       [
         set virus? true
         if i = 1[set color red]
