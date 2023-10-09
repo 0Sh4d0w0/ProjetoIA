@@ -112,6 +112,16 @@ to go_once
     set p_inf random-float 1.0001
     set idade idade + 1
     if idade > 1000 [die]
+     if tempo = 10
+        [set tempo 0 if p_morte > gl2 [die set deaths deaths + 1] ]
+      if tempo < 10 [set tempo tempo + 1]
+    if [pcolor] of patch-ahead 1 != 95
+    [if virus? = true
+      [
+      set p_morte p_morte - 0.1
+      set color white
+      ]
+    ]
   ]
   ask Pessoas[
     if any? other Pessoas-here with [virus? = true]
@@ -136,6 +146,16 @@ end
     if idade >= 400 and idade <= 600[set p_inf p_inf + 0.25 set p_morte p_morte + 0.15]
     if idade >= 300 and idade <= 400[set p_inf p_inf + 0.15 set p_morte p_morte + 0.1]
     if idade >= 0 and idade <= 300 [set p_inf p_inf + 0.10 set p_morte p_morte + 0]
+     if tempo = 10
+        [set tempo 0 if p_morte > gl2 [die set deaths deaths + 1] ]
+      if tempo < 10 [set tempo tempo + 1]
+    if [pcolor] of patch-ahead 1 != 95
+    [if virus? = true
+      [
+      set p_morte p_morte - 0.1
+      set color white
+      ]
+    ]
   ]
   ask Pessoas[
     if any? other Pessoas-here with [virus? = true]
@@ -159,14 +179,29 @@ to go
     set gl random-float 1.0001
     set gl2 random-float 1.0001
     set idade idade + n_movement
+    if count Pessoas-here > 1[
+      if prob prob_nascimento[
+        hatch 1[
+          set idade 0
+          set heading random 360
+        ]
+      ]
+    ]
     if idade > 1000 [die set deaths deaths + 1]
     if idade >= 600 and idade >= 1000[set p_inf p_inf + 0.6 set p_morte p_morte + 0.2]
     if idade >= 400 and idade >= 600[set p_inf p_inf + 0.4 set p_morte p_morte + 0.1]
     if idade >= 300 and idade >= 400[set p_inf p_inf + 0.2 set p_morte p_morte + 0.05]
     if idade >= 0 and idade >= 300 [set p_inf p_inf + 0.10 set p_morte p_morte + 0]
     if tempo = 10
-        [set tempo 0 if p_morte > gl2 [die set deaths deaths + 1] ]
+        [set tempo 0 if p_morte > gl2 [set deaths deaths + 1 die] ]
       if tempo < 10 [set tempo tempo + 1]
+    if [pcolor] of patch-ahead 1 != 95
+    [if virus? = true
+      [
+      set p_morte p_morte - 0.1
+      set color white
+      ]
+    ]
   ]
   ask Pessoas[
     if any? other Pessoas-here with [virus? = true]
@@ -197,7 +232,50 @@ to spread
     let myPessoa self
     set virus? true
     if [virus?] of myPessoa = true [ set infected infected + 1]
+
   ]
+end
+to spread_covid
+  ask Pessoa 1[
+    set i 1
+     if i = 1[set p_morte 0.1 set p_cura 0.9 set color red set p_inf p_inf + 0.6]
+    if i = 2[set p_morte 0.3 set p_cura 0.4 set color yellow set p_inf p_inf + 0.5]
+    if i = 3[set p_morte 0.7 set p_cura 0.01 set color black set p_inf p_inf + 0.3]
+let myPessoa self
+     set virus? true
+    set infected 1
+    ifelse [virus?] of myPessoa = true [ set infected infected + 0]
+    [set infected infected + 1]
+  ]
+end
+to spread_hiv
+  ask Pessoa 1[
+    set i 2
+     if i = 1[set p_morte 0.1 set p_cura 0.9 set color red set p_inf p_inf + 0.6]
+    if i = 2[set p_morte 0.3 set p_cura 0.4 set color yellow set p_inf p_inf + 0.5]
+    if i = 3[set p_morte 0.7 set p_cura 0.01 set color black set p_inf p_inf + 0.3]
+let myPessoa self
+     set virus? true
+    set infected 1
+    ifelse [virus?] of myPessoa = true [ set infected infected + 0]
+    [set infected infected + 1]
+  ]
+end
+to spread_pesteNegra
+  ask Pessoa 1[
+    set i 3
+     if i = 1[set p_morte 0.1 set p_cura 0.9 set color red set p_inf p_inf + 0.6]
+    if i = 2[set p_morte 0.3 set p_cura 0.4 set color yellow set p_inf p_inf + 0.5]
+    if i = 3[set p_morte 0.7 set p_cura 0.01 set color black set p_inf p_inf + 0.3]
+let myPessoa self
+     set virus? true
+    set infected 1
+    ifelse [virus?] of myPessoa = true [ set infected infected + 0]
+    [set infected infected + 1]
+  ]
+end
+to-report prob[x]
+  report (random-float 1 < x)
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -376,29 +454,105 @@ TEXTBOX
 324
 888
 389
-Covid(90% cura, 10% morte)\nAo longo de 10 dias(ticks)
+Covid(Muita chance de cura e muita chance de alastramento)\nAo longo de 10 dias(ticks)
 10
 15.0
 1
 
 TEXTBOX
-738
-350
-888
-376
-HIV(60% cura, 40% morte)\nAo longo de 10 ticks
+737
+365
+887
+404
+HIV(moderada chance de cura e alastramento)\nAo longo de 10 ticks
 10
 45.0
 1
 
 TEXTBOX
 738
-376
+406
 888
-415
-Peste negra(1% cura, 99% morte)\nAo longo de 10 ticks
+445
+Peste negra(Alta chance de morte mas pouco alastramento)\nAo longo de 10 ticks
 10
 0.0
+1
+
+TEXTBOX
+957
+320
+1107
+359
+Se visita o hospital vai ficar vacinado e terá chances de ser curado do virus
+10
+0.0
+1
+
+SLIDER
+422
+530
+594
+563
+prob_nascimento
+prob_nascimento
+0
+1
+1.0
+0.05
+1
+NIL
+HORIZONTAL
+
+BUTTON
+1028
+132
+1121
+165
+Toma covid
+spread_covid
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+1045
+193
+1125
+226
+Toma hiv
+spread_hiv
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+1035
+259
+1098
+292
+Morre
+spread_pesteNegra
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
 1
 
 @#$#@#$#@
