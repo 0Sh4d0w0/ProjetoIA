@@ -108,7 +108,7 @@ end
 to go_once
   ask Pessoas[
     set heading random 360
-    forward 1
+    forward 2
     set p_inf random-float 1.0001
     set idade idade + 1
     if idade > 1000 [die]
@@ -172,8 +172,9 @@ end
 to go
   ask Pessoas[
     set heading random 360
-    forward 1
+    forward 2
     set p_inf p_inf + random-float 0.2001
+    set p_cura p_cura + random-float 0.2001
     set idade idade + 1
     if idade > 1000 [die set deaths deaths + 1]
     set gl random-float 1.0001
@@ -187,22 +188,29 @@ to go
         ]
       ]
     ]
+
     if idade > 1000 [die set deaths deaths + 1]
-    if idade >= 600 and idade >= 1000[set p_inf p_inf + 0.6 set p_morte p_morte + 0.2]
-    if idade >= 400 and idade >= 600[set p_inf p_inf + 0.4 set p_morte p_morte + 0.1]
-    if idade >= 300 and idade >= 400[set p_inf p_inf + 0.2 set p_morte p_morte + 0.05]
-    if idade >= 0 and idade >= 300 [set p_inf p_inf + 0.10 set p_morte p_morte + 0]
+    if idade >= 600 and idade >= 1000[set p_inf p_inf + 0.8 set p_morte p_morte + 0.2 set p_cura p_cura + 0.2]
+    if idade >= 400 and idade >= 600[set p_inf p_inf + 0.5 set p_morte p_morte + 0.1 set p_cura p_cura + 0.3]
+    if idade >= 300 and idade >= 400[set p_inf p_inf + 0.3 set p_morte p_morte + 0.05 set p_cura p_cura + 0.4]
+    if idade >= 0 and idade >= 300 [set p_inf p_inf + 0.15 set p_morte p_morte + 0 set p_cura p_cura + 0.5]
+    if tempo < 10 [set tempo tempo + 1]
     if tempo = 10
-        [set tempo 0 if p_morte > gl2 [set deaths deaths + 1 die] ]
-      if tempo < 10 [set tempo tempo + 1]
+        [set tempo 0
+
+
+          if p_morte > gl2 [set deaths deaths + 1 die]
+          ]
+
     if [pcolor] of patch-ahead 1 != 95
     [if virus? = true
       [
-      set p_morte p_morte - 0.1
+      set p_cura p_cura + 0.1 set p_morte p_morte - 0.1]
       set color white
+        if tempo = 0 [if p_cura > gl2 [set virus? false]]
       ]
     ]
-  ]
+
   ask Pessoas[
     if any? other Pessoas-here with [virus? = true]
     [
@@ -231,7 +239,8 @@ to spread
 
     let myPessoa self
     set virus? true
-    if [virus?] of myPessoa = true [ set infected infected + 1]
+    if [virus?] of myPessoa = true [ set infected infected + 0]
+    set infected 1
 
   ]
 end
@@ -245,7 +254,7 @@ let myPessoa self
      set virus? true
     set infected 1
     ifelse [virus?] of myPessoa = true [ set infected infected + 0]
-    [set infected infected + 1]
+    [set infected 1]
   ]
 end
 to spread_hiv
@@ -258,7 +267,7 @@ let myPessoa self
      set virus? true
     set infected 1
     ifelse [virus?] of myPessoa = true [ set infected infected + 0]
-    [set infected infected + 1]
+    [set infected 1]
   ]
 end
 to spread_pesteNegra
@@ -271,7 +280,7 @@ let myPessoa self
      set virus? true
     set infected 1
     ifelse [virus?] of myPessoa = true [ set infected infected + 0]
-    [set infected infected + 1]
+    [set infected 1]
   ]
 end
 to-report prob[x]
@@ -498,17 +507,17 @@ prob_nascimento
 prob_nascimento
 0
 1
-1.0
+0.4
 0.05
 1
 NIL
 HORIZONTAL
 
 BUTTON
-1028
-132
-1121
-165
+997
+113
+1090
+146
 Toma covid
 spread_covid
 NIL
@@ -522,10 +531,10 @@ NIL
 1
 
 BUTTON
-1045
-193
-1125
-226
+998
+162
+1078
+195
 Toma hiv
 spread_hiv
 NIL
@@ -539,10 +548,10 @@ NIL
 1
 
 BUTTON
-1035
-259
-1098
-292
+999
+212
+1062
+245
 Morre
 spread_pesteNegra
 NIL
