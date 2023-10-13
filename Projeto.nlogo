@@ -129,9 +129,11 @@ to go_once
       if p_inf > 0.5
       [
         set virus? true
-        set infected infected + 1
       ]
     ]
+  ]
+   ask Pessoas[
+    set infected count Pessoas with [virus? = true]
   ]
 end
 
@@ -163,9 +165,11 @@ end
       if p_inf > 0.5
       [
         set virus? true
-        set infected infected + 1
       ]
     ]
+  ]
+  ask Pessoas[
+    set infected count Pessoas with [virus? = true]
   ]
 end
 
@@ -220,11 +224,11 @@ to go
         if i = 1[set p_morte p_morte + 0.2 set p_cura p_cura + 0.3 set color red set p_inf p_inf + 0.4]
         if i = 2[set p_morte p_morte + 0.35 set p_cura p_cura + 0.1 set color yellow set p_inf p_inf + 0.3]
         if i = 3[set p_morte p_morte + 0.7 set p_cura p_cura + 0 set color black set p_inf p_inf + 0.15]
-        set infected infected + 1
-
-
       ]
     ]
+  ]
+  ask Pessoas[
+    set infected count Pessoas with [virus? = true]
   ]
 tick
 end
@@ -507,7 +511,7 @@ prob_nascimento
 prob_nascimento
 0
 1
-0.4
+0.0
 0.05
 1
 NIL
