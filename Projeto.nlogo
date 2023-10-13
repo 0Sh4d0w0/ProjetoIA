@@ -126,7 +126,7 @@ to go_once
   ask Pessoas[
     if any? other Pessoas-here with [virus? = true]
     [
-      if p_inf > 0.5
+      if prob p_inf
       [
         set virus? true
       ]
@@ -162,7 +162,7 @@ end
   ask Pessoas[
     if any? other Pessoas-here with [virus? = true]
     [
-      if p_inf > 0.5
+      if prob p_inf
       [
         set virus? true
       ]
@@ -203,7 +203,7 @@ to go
         [set tempo 0
 
 
-          if p_morte > gl2 [set deaths deaths + 1 die]
+          if prob p_morte[set deaths deaths + 1 die]
           ]
 
     if [pcolor] of patch-ahead 1 != 95
@@ -211,14 +211,14 @@ to go
       [
       set p_cura p_cura + 0.1 set p_morte p_morte - 0.1]
       set color white
-        if tempo = 0 [if p_cura > gl2 [set virus? false]]
+        if tempo = 0 [if prob p_cura[set virus? false]]
       ]
     ]
 
   ask Pessoas[
     if any? other Pessoas-here with [virus? = true]
     [
-      if p_inf > gl
+      if prob p_inf
       [
         set virus? true
         if i = 1[set p_morte p_morte + 0.2 set p_cura p_cura + 0.3 set color red set p_inf p_inf + 0.4]
@@ -248,6 +248,7 @@ to spread
 
   ]
 end
+
 to spread_covid
   ask Pessoa 1[
     set i 1
@@ -261,6 +262,7 @@ let myPessoa self
     [set infected 1]
   ]
 end
+
 to spread_hiv
   ask Pessoa 1[
     set i 2
@@ -274,6 +276,7 @@ let myPessoa self
     [set infected 1]
   ]
 end
+
 to spread_pesteNegra
   ask Pessoa 1[
     set i 3
@@ -287,6 +290,7 @@ let myPessoa self
     [set infected 1]
   ]
 end
+
 to-report prob[x]
   report (random-float 1 < x)
 end
