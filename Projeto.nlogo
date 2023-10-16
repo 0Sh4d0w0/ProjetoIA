@@ -1,5 +1,5 @@
 breed [Pessoas Pessoa]
-globals [infected deaths i Covid HIV Peste_negra Tipo_virus gl gl2 tempo]
+globals [infected deaths i Covid HIV Peste_negra Tipo_virus tempo]
 pessoas-own [p_inf virus? idade p_morte p_cura]
 to setup
   clear-all
@@ -95,8 +95,6 @@ to setup
     set p_cura 0
     set i random 3 + 1
     set idade random 99
-    set gl 0
-    set gl2 0
      set tempo 0
   ]
   set infected 0
@@ -111,9 +109,9 @@ to go_once
     forward 2
     set p_inf random-float 1.0001
     set idade idade + 1
-    if idade > 1000 [die]
+
      if tempo = 10
-        [set tempo 0 if p_morte > gl2 [die set deaths deaths + 1] ]
+        [set tempo 0 if prob p_morte [die set deaths deaths + 1] ]
       if tempo < 10 [set tempo tempo + 1]
     if [pcolor] of patch-ahead 1 != 95
     [if virus? = true
@@ -143,13 +141,13 @@ end
     forward n_movement
     set p_inf random-float 1.0001
     set idade idade + n_movement
-    if idade > 1000 [die set deaths deaths + 1]
+
     if idade >= 600 and idade <= 1000[set p_inf p_inf + 0.4 set p_morte p_morte + 0.3]
     if idade >= 400 and idade <= 600[set p_inf p_inf + 0.25 set p_morte p_morte + 0.15]
     if idade >= 300 and idade <= 400[set p_inf p_inf + 0.15 set p_morte p_morte + 0.1]
     if idade >= 0 and idade <= 300 [set p_inf p_inf + 0.10 set p_morte p_morte + 0]
      if tempo = 10
-        [set tempo 0 if p_morte > gl2 [die set deaths deaths + 1] ]
+        [set tempo 0 if prob p_morte [die set deaths deaths + 1] ]
       if tempo < 10 [set tempo tempo + 1]
     if [pcolor] of patch-ahead 1 != 95
     [if virus? = true
@@ -177,12 +175,9 @@ to go
   ask Pessoas[
     set heading random 360
     forward 2
-    set p_inf p_inf + random-float 0.2001
-    set p_cura p_cura + random-float 0.2001
+    set p_inf p_inf + random-float 0.3001
+    set p_cura p_cura + random-float 0.0001
     set idade idade + 1
-    if idade > 1000 [die set deaths deaths + 1]
-    set gl random-float 1.0001
-    set gl2 random-float 1.0001
     set idade idade + n_movement
     if count Pessoas-here > 1[
       if prob prob_nascimento[
@@ -193,7 +188,7 @@ to go
       ]
     ]
 
-    if idade > 1000 [die set deaths deaths + 1]
+
     if idade >= 600 and idade >= 1000[set p_inf p_inf + 0.8 set p_morte p_morte + 0.2 set p_cura p_cura + 0.2]
     if idade >= 400 and idade >= 600[set p_inf p_inf + 0.5 set p_morte p_morte + 0.1 set p_cura p_cura + 0.3]
     if idade >= 300 and idade >= 400[set p_inf p_inf + 0.3 set p_morte p_morte + 0.05 set p_cura p_cura + 0.4]
@@ -208,9 +203,8 @@ to go
 
     if [pcolor] of patch-ahead 1 != 95
     [if virus? = true
-      [
-      set p_cura p_cura + 0.1 set p_morte p_morte - 0.1]
-      set color white
+      [set p_cura p_cura + 0.1 set p_morte p_morte - 0.1 set color white]
+
         if tempo = 0 [if prob p_cura[set virus? false]]
       ]
     ]
@@ -221,9 +215,9 @@ to go
       if prob p_inf
       [
         set virus? true
-        if i = 1[set p_morte p_morte + 0.2 set p_cura p_cura + 0.3 set color red set p_inf p_inf + 0.4]
-        if i = 2[set p_morte p_morte + 0.35 set p_cura p_cura + 0.1 set color yellow set p_inf p_inf + 0.3]
-        if i = 3[set p_morte p_morte + 0.7 set p_cura p_cura + 0 set color black set p_inf p_inf + 0.15]
+        if i = 1[set p_morte p_morte + 0.15 set p_cura p_cura + 0.9 set color red set p_inf p_inf + 0.7]
+        if i = 2[set p_morte p_morte + 0.3 set p_cura p_cura + 0.4 set color yellow set p_inf p_inf + 0.6]
+        if i = 3[set p_morte p_morte + 0.7 set p_cura p_cura + 0.01 set color black set p_inf p_inf + 0.4]
       ]
     ]
   ]
@@ -235,9 +229,9 @@ end
 
 to spread
   ask Pessoa 1[
-    if i = 1[set p_morte 0.1 set p_cura 0.9 set color red set p_inf p_inf + 0.6]
-    if i = 2[set p_morte 0.3 set p_cura 0.4 set color yellow set p_inf p_inf + 0.5]
-    if i = 3[set p_morte 0.7 set p_cura 0.01 set color black set p_inf p_inf + 0.3]
+    if i = 1[set p_morte 0.15 set p_cura 0.9 set color red set p_inf p_inf + 0.7]
+    if i = 2[set p_morte 0.3 set p_cura 0.4 set color yellow set p_inf p_inf + 0.6]
+    if i = 3[set p_morte 0.7 set p_cura 0.01 set color black set p_inf p_inf + 0.4]
 
 
 
@@ -252,9 +246,9 @@ end
 to spread_covid
   ask Pessoa 1[
     set i 1
-     if i = 1[set p_morte 0.1 set p_cura 0.9 set color red set p_inf p_inf + 0.6]
-    if i = 2[set p_morte 0.3 set p_cura 0.4 set color yellow set p_inf p_inf + 0.5]
-    if i = 3[set p_morte 0.7 set p_cura 0.01 set color black set p_inf p_inf + 0.3]
+    if i = 1[set p_morte p_morte + 0.15 set p_cura p_cura + 0.9 set color red set p_inf p_inf + 0.7]
+        if i = 2[set p_morte p_morte + 0.3 set p_cura p_cura + 0.4 set color yellow set p_inf p_inf + 0.6]
+        if i = 3[set p_morte p_morte + 0.7 set p_cura p_cura + 0.01 set color black set p_inf p_inf + 0.4]
 let myPessoa self
      set virus? true
     set infected 1
@@ -266,9 +260,9 @@ end
 to spread_hiv
   ask Pessoa 1[
     set i 2
-     if i = 1[set p_morte 0.1 set p_cura 0.9 set color red set p_inf p_inf + 0.6]
-    if i = 2[set p_morte 0.3 set p_cura 0.4 set color yellow set p_inf p_inf + 0.5]
-    if i = 3[set p_morte 0.7 set p_cura 0.01 set color black set p_inf p_inf + 0.3]
+     if i = 1[set p_morte p_morte + 0.15 set p_cura p_cura + 0.9 set color red set p_inf p_inf + 0.7]
+        if i = 2[set p_morte p_morte + 0.3 set p_cura p_cura + 0.4 set color yellow set p_inf p_inf + 0.6]
+        if i = 3[set p_morte p_morte + 0.7 set p_cura p_cura + 0.01 set color black set p_inf p_inf + 0.4]
 let myPessoa self
      set virus? true
     set infected 1
@@ -280,9 +274,9 @@ end
 to spread_pesteNegra
   ask Pessoa 1[
     set i 3
-     if i = 1[set p_morte 0.1 set p_cura 0.9 set color red set p_inf p_inf + 0.6]
-    if i = 2[set p_morte 0.3 set p_cura 0.4 set color yellow set p_inf p_inf + 0.5]
-    if i = 3[set p_morte 0.7 set p_cura 0.01 set color black set p_inf p_inf + 0.3]
+     if i = 1[set p_morte p_morte + 0.15 set p_cura p_cura + 0.9 set color red set p_inf p_inf + 0.7]
+        if i = 2[set p_morte p_morte + 0.3 set p_cura p_cura + 0.4 set color yellow set p_inf p_inf + 0.6]
+        if i = 3[set p_morte p_morte + 0.7 set p_cura p_cura + 0.01 set color black set p_inf p_inf + 0.4]
 let myPessoa self
      set virus? true
     set infected 1
@@ -515,17 +509,17 @@ prob_nascimento
 prob_nascimento
 0
 1
-0.0
+0.3
 0.05
 1
 NIL
 HORIZONTAL
 
 BUTTON
-997
-113
-1090
-146
+959
+381
+1052
+414
 Toma covid
 spread_covid
 NIL
@@ -539,10 +533,10 @@ NIL
 1
 
 BUTTON
-998
-162
-1078
-195
+960
+430
+1040
+463
 Toma hiv
 spread_hiv
 NIL
@@ -556,10 +550,10 @@ NIL
 1
 
 BUTTON
-999
-212
-1062
-245
+961
+480
+1024
+513
 Morre
 spread_pesteNegra
 NIL
@@ -571,6 +565,24 @@ NIL
 NIL
 NIL
 1
+
+PLOT
+952
+115
+1152
+265
+Infetados
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "" "plot infected"
 
 @#$#@#$#@
 ## WHAT IS IT?
