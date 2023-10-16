@@ -237,6 +237,7 @@ to spread
 
     let myPessoa self
     set virus? true
+    set idade 0
     if [virus?] of myPessoa = true [ set infected infected + 0]
     set infected 1
 
@@ -252,6 +253,7 @@ to spread_covid
 let myPessoa self
      set virus? true
     set infected 1
+    set idade 0
     ifelse [virus?] of myPessoa = true [ set infected infected + 0]
     [set infected 1]
   ]
@@ -265,6 +267,7 @@ to spread_hiv
         if i = 3[set p_morte p_morte + 0.7 set p_cura p_cura + 0.01 set color black set p_inf p_inf + 0.4]
 let myPessoa self
      set virus? true
+    set idade 0
     set infected 1
     ifelse [virus?] of myPessoa = true [ set infected infected + 0]
     [set infected 1]
@@ -279,6 +282,7 @@ to spread_pesteNegra
         if i = 3[set p_morte p_morte + 0.7 set p_cura p_cura + 0.01 set color black set p_inf p_inf + 0.4]
 let myPessoa self
      set virus? true
+    set idade 0
     set infected 1
     ifelse [virus?] of myPessoa = true [ set infected infected + 0]
     [set infected 1]
@@ -509,7 +513,7 @@ prob_nascimento
 prob_nascimento
 0
 1
-0.3
+0.35
 0.05
 1
 NIL
